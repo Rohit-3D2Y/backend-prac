@@ -8,7 +8,7 @@ import fs from "fs"
         api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
     });
 
-    const uploadOnCloudinry = async (localFilePath) => {
+    const uploadOnCloudinary = async (localFilePath) => {
         try {
             if(!localFilePath) return null
 
@@ -28,7 +28,7 @@ import fs from "fs"
         }
     }
 
-    export {uploadOnCloudinry};
+    export {uploadOnCloudinary};
 
     // cloudinary.v2.uploader.upload("https://upload.wikipedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
     //     {public_id:"olympic_flag"},
