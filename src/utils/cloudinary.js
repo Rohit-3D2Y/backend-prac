@@ -1,36 +1,39 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import {v2 as cloudinary} from "cloudinary"
 import fs from "fs"
 
-    // Configuration
-    cloudinary.config({ 
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-        api_key: process.env.CLOUDINARY_API_KEY, 
-        api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
-    });
+console.log("Cloudinary Config Before Setup:", {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
 
-    const uploadOnCloudinary = async (localFilePath) => {
-        try {
-            if(!localFilePath) return null
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET 
+});
 
-            //upload on cloudinary
+const uploadOnCloudinary = async (localFilePath) => {
+    try {
+        if (!localFilePath) return null
+        //upload the file on cloudinary
+        const response = await cloudinary.uploader.upload(localFilePath, {
+            resource_type: "auto"
+        })
+        // file has been uploaded successfull
+        //console.log("file is uploaded on cloudinary ", response.url);
+        fs.unlinkSync(localFilePath)
+        return response;
 
-            const response = await cloudinary.uploader.upload(localFilePath, {
-                resource_type: "auto"
-            })
-            // file has been uploaded successfully
-            console.log("File uploaded successfully", response.url);
-
-            return response;
-        } catch (error) {
-            fs.unlinkSync(localFilePath); //remove locally saved temporary files as the upload operatin got failed
-            return null;
-             
-        }
+    } catch (error) {
+        fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the upload operation got failed
+        return null;
     }
+}
 
-    export {uploadOnCloudinary};
 
-    // cloudinary.v2.uploader.upload("https://upload.wikipedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
-    //     {public_id:"olympic_flag"},
-    //     function(error, result) {console.log(result, error)});
-    
+
+export {uploadOnCloudinary}
